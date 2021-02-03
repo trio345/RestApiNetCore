@@ -2,3 +2,8 @@
 2021-02-03 14:27:09.8350 INFO Trying to fetch all data Todo Items
 2021-02-03 14:27:10.2453 ERROR Something went wrong: System.Exception: Exception while fetching all data todo items
    at RestApiNetCore.Controllers.TodoItemsController.List() in C:\Users\User\source\repos\RestApiNetCore\RestApiNetCore\Controllers\TodoItemsController.cs:line 34
+2021-02-03 15:19:41.3253 INFO Trying to fetch all data Todo Items
+2021-02-03 15:50:46.9352 INFO Trying to fetch all data Todo Items
+2021-02-03 16:07:18.6115 INFO Trying to fetch all data Todo Items
+2021-02-03 18:16:33.0742 INFO Trying to fetch all data Todo Items
+2021-02-03 18:20:24.5914 INFO Trying to fetch all data Todo Items

@@ -28,17 +28,10 @@ namespace RestApiNetCore.Controllers
         [HttpGet]
         public IActionResult List()
         {
-            try
-            {
-                _logger.LogInfo("Trying to fetch all data Todo Items");
-                throw new Exception("Exception while fetching all data todo items");
-                return Ok(_todoRepository.All);
-            } catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong: {ex}");
-            }
-
-            return StatusCode(500, "Internal server error");
+            _logger.LogInfo("Trying to fetch all data Todo Items");
+            throw new Exception("Exception while fetching all data todo items");
+            
+            return Ok(_todoRepository.All);
         }
 
         [HttpGet("GetDetails/{id}")]

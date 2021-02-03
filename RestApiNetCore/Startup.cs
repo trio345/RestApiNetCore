@@ -10,6 +10,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using NLog;
+using RestApiNetCore.CustomExceptionMiddleware;
+using RestApiNetCore.Extensions;
 using RestApiNetCore.Models;
 using RestApiNetCore.Services;
 using System;
@@ -23,7 +25,7 @@ namespace RestApiNetCore
         {
             LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
-
+                
         }
 
         public IConfiguration Configuration { get; }
@@ -39,8 +41,6 @@ namespace RestApiNetCore
                              .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             services.AddSingleton<ITodoRepository, TodoRepository>();
-
-            
 
             services.Configure<BookStoreDatabaseSettings>(
                             Configuration.GetSection(nameof(BookStoreDatabaseSettings)));
@@ -66,7 +66,7 @@ namespace RestApiNetCore
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
         {
             if (env.IsDevelopment())
             {
@@ -75,19 +75,32 @@ namespace RestApiNetCore
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestApiNetCore v1"));
             }
 
+            /*app.ConfigureExceptionHandler(logger);*/
+            app.UseMiddleware<ExceptionMiddleware>();
+            /* app.ConfigureCustomExceptionMiddleware();*/
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            /*app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "api/{controller=Todo}/{id?}"
                     );
+            });*/
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
             });
         }
+        /*public static void ConfigureCustomExceptionMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionMiddleware>();
+        }*/
     }
 }
