@@ -1,3 +1,4 @@
+using Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +9,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using NLog;
 using RestApiNetCore.Models;
 using RestApiNetCore.Services;
+using System;
+using System.IO;
 
 namespace RestApiNetCore
 {
@@ -17,7 +21,9 @@ namespace RestApiNetCore
     {
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -34,6 +40,8 @@ namespace RestApiNetCore
 
             services.AddSingleton<ITodoRepository, TodoRepository>();
 
+            
+
             services.Configure<BookStoreDatabaseSettings>(
                             Configuration.GetSection(nameof(BookStoreDatabaseSettings)));
 
@@ -41,6 +49,9 @@ namespace RestApiNetCore
                             sp => sp.GetRequiredService<IOptions<BookStoreDatabaseSettings>>().Value);
 
             services.AddSingleton<BookService>();
+
+            // logger config
+            services.AddSingleton<ILoggerManager, LoggerManager>();
 
             services.AddSwaggerGen(c =>
             {
@@ -52,6 +63,7 @@ namespace RestApiNetCore
 
 
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

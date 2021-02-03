@@ -63,7 +63,7 @@ namespace RestApiNetCore.Controllers
 
             return CreatedAtAction("GetBook", new { id = book.Id.ToString() }, book);
         }
-
+        
         // DELETE: api/Books/5
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Contracts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestApiNetCore.Models;
 using RestApiNetCore.Services;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace RestApiNetCore.Controllers
 {
     [Route("api/[controller]")]
@@ -14,17 +16,29 @@ namespace RestApiNetCore.Controllers
     public class TodoItemsController : ControllerBase
     {
         private readonly ITodoRepository _todoRepository;
+        private readonly ILoggerManager _logger;
         /*private ILoggerManager _logger;*/
-        public TodoItemsController(ITodoRepository todoRepository)
+        public TodoItemsController(ITodoRepository todoRepository, ILoggerManager logger)
         {
             _todoRepository = todoRepository;
+            _logger = logger;
 
         }
 
         [HttpGet]
         public IActionResult List()
         {
-            return Ok(_todoRepository.All);
+            try
+            {
+                _logger.LogInfo("Trying to fetch all data Todo Items");
+                throw new Exception("Exception while fetching all data todo items");
+                return Ok(_todoRepository.All);
+            } catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex}");
+            }
+
+            return StatusCode(500, "Internal server error");
         }
 
         [HttpGet("GetDetails/{id}")]
@@ -46,6 +60,7 @@ namespace RestApiNetCore.Controllers
             {
                 if (item == null || !ModelState.IsValid)
                 {
+                    _logger.LogError("Todo Item Name And Notes Required");
                     return BadRequest(ErrorCode.TodoItemNameAndNotesRequires.ToString());
                 }
                 bool itemExists = _todoRepository.DoesItemExist(item.ID);
@@ -54,10 +69,12 @@ namespace RestApiNetCore.Controllers
                     return StatusCode(StatusCodes.Status409Conflict, ErrorCode.TodoItemInUse.ToString());
                 }
 
+                _logger.LogInfo("Todo Item inserted");
                 _todoRepository.Insert(item);
-            } catch (Exception)
+            } catch (Exception ex)
             {
-                return BadRequest(ErrorCode.CouldNotCreateItem.ToString());
+                _logger.LogError($"Something went wrong: {ex}");
+                return StatusCode(500, "Internal Server Error");
             }
 
             return Ok(item);

@@ -1,0 +1,4 @@
+2021-02-03 14:14:36.0211 INFO Here is from list method in Todo Items
+2021-02-03 14:27:09.8350 INFO Trying to fetch all data Todo Items
+2021-02-03 14:27:10.2453 ERROR Something went wrong: System.Exception: Exception while fetching all data todo items
+   at RestApiNetCore.Controllers.TodoItemsController.List() in C:\Users\User\source\repos\RestApiNetCore\RestApiNetCore\Controllers\TodoItemsController.cs:line 34
