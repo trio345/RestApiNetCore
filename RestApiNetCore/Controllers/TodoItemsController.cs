@@ -1,11 +1,13 @@
 ﻿using Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestApiNetCore.Filters;
 using RestApiNetCore.Models;
 using RestApiNetCore.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 
@@ -29,7 +31,6 @@ namespace RestApiNetCore.Controllers
         public IActionResult List()
         {
             _logger.LogInfo("Trying to fetch all data Todo Items");
-            throw new Exception("Exception while fetching all data todo items");
             
             return Ok(_todoRepository.All);
         }
@@ -40,10 +41,19 @@ namespace RestApiNetCore.Controllers
             var item = _todoRepository.Find(id);
             if (item == null)
             {
-                return BadRequest(ErrorCode.RecordNotFound.ToString());
+                var message = string.Format("Todo item with id = {0} not found", id);
+                return NotFound(message);
+                /*var message = string.Format("Product with id = {0} not found", id);
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, message);*/
             }
 
             return Ok(item);
+        }
+
+        [NotImplExceptionFilter]
+        public IActionResult GetTodo(string id)
+        {
+            throw new NotImplementedException("This method is not implemented");
         }
 
         [HttpPost]

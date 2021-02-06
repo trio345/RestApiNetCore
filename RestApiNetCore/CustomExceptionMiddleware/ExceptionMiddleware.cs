@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using RestApiNetCore.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -25,7 +23,8 @@ namespace RestApiNetCore.CustomExceptionMiddleware
             try
             {
                 await _next(httpContext);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 _logger.LogError($"Something went wrong : {e}");
                 await HandleExceptionAsync(httpContext, e);

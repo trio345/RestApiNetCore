@@ -97,6 +97,8 @@ namespace RestApiNetCore
             {
                 endpoints.MapControllers();
             });
+
+
         }
         /*public static void ConfigureCustomExceptionMiddleware(this IApplicationBuilder app)
         {
